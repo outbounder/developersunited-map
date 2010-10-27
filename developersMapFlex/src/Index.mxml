@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/halo"
+	xmlns:map="devs.united.components.map.*"
+	frameRate="45"
+	applicationComplete="onCreationComplete()" 
+	currentState="loading"
+	width="100%"
+	height="100%" xmlns:states="devs.united.states.*" xmlns:skins="devs.united.skins.*" xmlns:mx1="library://ns.adobe.com/flex/mx">
+	
+	<fx:Style source="./styles/defaultStyle.css" />
+	
+	<fx:Metadata>
+		[ResourceBundle("devmap")]
+	</fx:Metadata>
+	
+	<fx:Script>
+		<![CDATA[
+			import devs.united.controller.AppMainController;
+			
+			import flash.net.navigateToURL;
+			
+			import mx.events.EffectEvent;
+			
+			import spark.effects.AddAction;
+			import spark.effects.easing.Sine;
+			
+			[Bindable]
+			public var appMainCtrl:AppMainController;
+			
+			private function onCreationComplete():void
+			{
+				this.appMainCtrl = new AppMainController("developersmap.dev/www/");
+				this.currentState = "front";
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		
+	</fx:Declarations>
+	
+	<s:states>
+		<s:State name="loading" />
+		<s:State name="front" />
+		<s:State name="auth" />
+		<s:State name="map" />
+		<s:State name="not" />
+	</s:states>
+	
+	<s:transitions>
+		<s:Transition fromState="front" toState="auth" autoReverse="true" >
+			<s:Sequence duration="200">
+				<s:SetAction target="{this.rect}" property="visible" value="true" />
+				<s:Fade target="{this.frontState}" />	
+				<s:Resize target="{this.rect}" easer="{new spark.effects.easing.Sine(1.4)}" />
+				<s:Fade target="{this.authState}" />
+				<s:SetAction target="{this.rect}" property="visible" value="false" />
+			</s:Sequence>
+		</s:Transition>
+		<s:Transition fromState="auth" toState="map" autoReverse="true" >
+			<s:Sequence duration="200">
+				<s:SetAction target="{this.rect}" property="visible" value="true" />
+				<s:Fade target="{this.authState}" />	
+				<s:Resize target="{this.rect}" />
+				<s:Fade target="{this.mapState}" />
+				<s:SetAction target="{this.rect}" property="visible" value="false" />
+				<s:SetAction target="{this.mapState}" property="currentState" value="showme" />
+			</s:Sequence>
+		</s:Transition>
+	</s:transitions>
+	
+	<skins:DefRect id="rect"  
+		visible="false" 
+		horizontalCenter="0"
+		verticalCenter="0"
+		width.front = "{this.frontState.devBtn.width}"
+		width.auth = "{this.authState.backgroundRect.width}"
+		height.front = "{this.frontState.devBtn.height}"
+		height.auth = "{this.authState.backgroundRect.height}"
+		width.map = "{this.mapState.backgroundRect.width}"
+		height.map = "{this.mapState.backgroundRect.height}"
+		/>
+	
+	<states:FrontState id="frontState" width="100%" height="100%" includeIn="front" alpha.front="1" alpha="0"/>
+	<states:AuthState id="authState" width="100%" height="100%" includeIn="auth" alpha.auth="1" alpha="0" />
+	<states:MapState id="mapState" width="100%" height="100%" includeIn="map" alpha.map="1" alpha="0" />
+	<states:NotState id="notState" width="100%" height="100%" includeIn="not" />
+	
+	
+	<s:Label id="restServiceRoot" text="{this.appMainCtrl.restServiceRoot}" right="0" top="0"/>
+	<s:Button id="sourceCodeButton" label="devsunitedmap@github.com" right="10" bottom="10" click="{navigateToURL(new URLRequest('http://github.com/outbounder/developersunited-map'));}"/>
+</s:Application>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<devs>
+{foreach from=$devs item=dev}
+<dev>
+{include file='devData.xml' entity=$dev}
+</dev>
+{/foreach}
+</devs>

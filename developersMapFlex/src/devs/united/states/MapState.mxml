@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AuthState
+	xmlns="devs.united.states.*" 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/halo" 
+	xmlns:map="devs.united.components.map.*" 
+	xmlns:skins="devs.united.skins.*"
+	currentState="animating"
+	creationComplete="onCreationComplete()" xmlns:mx1="library://ns.adobe.com/flex/mx">
+	
+	<fx:Script>
+		<![CDATA[
+			import devs.united.states.content.map.MapController;
+			import com.google.maps.LatLng;
+			import com.google.maps.overlays.Marker;
+			import devs.united.data.model.DevData;
+			import lib.rest.RestLoaderEvent;
+			import devs.united.data.access.DevMapService;
+			import devs.united.skins.DefToggleBtnSkin;
+			import mx.core.FlexGlobals;
+			import mx.events.FlexEvent;
+			import devs.united.skins.DefBtnSkin;
+			
+			private var currentStateChanged:Boolean = false;
+			[Bindable]
+			private var devsService:DevMapService;
+			[Bindable]
+			private var mapCtrl:MapController;
+			
+			private function onCreationComplete():void
+			{
+				this.devsService = new DevMapService(this.appMainCtrl.restServiceRoot);
+			}
+			
+			protected function toggleState_clickHandler(event:MouseEvent):void
+			{
+				if(event.target == this.showallBtn)
+					this.currentState = 'showall';
+				else
+					this.currentState = 'showme';
+			}
+			
+			public override function set currentState(value:String) : void
+			{
+				super.currentState = value;
+				this.currentStateChanged = true;
+				this.commitProperties();
+			}
+			
+			protected override function commitProperties() : void
+			{
+				if(this.currentStateChanged && this.currentState != 'animating' && this.map != null && this.map.currentState == 'ready' )
+				{
+					if(this.mapCtrl == null)
+						this.mapCtrl = new MapController(this.map, this.devsService, this.appMainCtrl, this.cursorManager);
+					this.mapCtrl.handleStateChange(this.currentState);
+					this.currentStateChanged = false;
+				}
+			}
+
+
+			protected function map_creationCompleteHandler(event:FlexEvent):void
+			{
+				this.map.addEventListener(Event.COMPLETE, onMapComplete);
+			}
+			
+			private function onMapComplete(e:Event):void
+			{
+				this.invalidateProperties();
+			}
+
+		]]>
+	</fx:Script>
+	
+	<states>
+		<s:State name="animating" />
+		<s:State name="showall" stateGroups="created" />
+		<s:State name="showme" stateGroups="created" />
+	</states>
+	
+	<s:Group width="900" horizontalCenter="0" verticalCenter="0">
+		<skins:DefRect  id="backgroundRect" width="100%" height="100%" />
+		
+		<s:VGroup width="100%" horizontalAlign="center">
+			<mx1:Spacer height="20" />
+			<mx1:Label id="slogan" text="{resourceManager.getString('devmap','mapslogan')}" styleName="mapslogan"/>
+			<mx1:Spacer width="95%" height="405" includeIn="animating"/>
+			<map:DevsUnitedMap id="map" width="95%" height="405" includeIn="created" creationComplete="map_creationCompleteHandler(event)"
+				appMainCtrl="{this.appMainCtrl}"
+				devService="{this.devsService}"/>
+			<mx1:Label id="title" text="{resourceManager.getString('devmap','maptitle')}" styleName="maptitle" />
+			<s:ToggleButton id="showallBtn" skinClass="{DefToggleBtnSkin}" label="{resourceManager.getString('devmap','showAllBtn')}" 
+				selected="{this.currentState == 'showall'}" 
+				click="toggleState_clickHandler(event)"/>
+			<s:ToggleButton id="showmeBtn" skinClass="{DefToggleBtnSkin}" label="{resourceManager.getString('devmap','showmeBtn')}" 
+				selected="{this.currentState == 'showme'}"
+				click="toggleState_clickHandler(event)"/>
+			<mx1:Label width="60%" text="{resourceManager.getString('devmap','maphint')}" styleName="maphint" textAlign="center"/>
+			<mx1:Spacer height="10" />
+		</s:VGroup>
+	</s:Group>
+	
+	
+</AuthState>

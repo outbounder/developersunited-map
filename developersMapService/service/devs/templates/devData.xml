@@ -1,0 +1,3 @@
+{foreach from=$dev key=k item=v}
+<property name="{$k}">{$v}</property>
+{/foreach}

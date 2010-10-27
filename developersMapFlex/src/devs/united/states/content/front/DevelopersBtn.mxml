@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/halo"
+	rollOver="{this.currentState = 'over'}"
+	rollOut="{this.currentState = 'up'}" xmlns:skins="devs.united.skins.*" xmlns:mx1="library://ns.adobe.com/flex/mx">
+	<fx:Script>
+		<![CDATA[
+			import flashx.textLayout.elements.TextFlow;
+			
+			import spark.utils.TextFlowUtil;
+		]]>
+	</fx:Script>
+	
+	<s:states>
+		<s:State name="up"/>
+		<s:State name="over"/>
+		<s:State name="down"/>
+		<s:State name="disabled"/>
+	</s:states>
+	
+	<s:transitions>
+		<s:Transition fromState="up" toState="over" >
+			<s:Parallel>
+				<s:Fade target="{this.hint}" />
+				<s:Resize target="{this.hint}" />
+			</s:Parallel>
+		</s:Transition>
+		<s:Transition fromState="over" toState="down">
+			<s:Parallel>
+				<s:Fade target="{this.hint}" />
+			</s:Parallel>
+		</s:Transition>
+		<s:Transition fromState="over" toState="up">
+			<s:Parallel>
+				<s:Fade target="{this.hint}" />
+				<s:Resize target="{this.hint}" />
+			</s:Parallel>
+		</s:Transition>
+		<s:Transition fromState="down" toState="up">
+			<s:Parallel>
+				<s:Fade target="{this.hint}" />
+				<s:Resize target="{this.hint}" />
+			</s:Parallel>
+		</s:Transition>
+	</s:transitions>
+	
+	<skins:DefRect width="100%" height="100%" includeIn="up,over,down" />
+	
+	<mx1:Label id="label" 
+		text="{resourceManager.getString('devmap','developerLabel')}" 
+		width="100%" 
+		paddingLeft="10"
+		paddingRight="10"
+		paddingTop="10"
+		paddingBottom="10"
+		styleName="defBtnSkinLabel"
+		textAlign="center" />
+	
+	<s:RichText
+		id="hint"
+		top="{this.label.y+this.label.height}"
+		width="270"
+		content="{TextFlowUtil.importFromString(resourceManager.getString('devmap', 'developerLabelHint'))}"
+		styleName="devsBtnHint"
+		includeIn="up,over,down"
+		paddingLeft="10"
+		paddingRight="10"
+		paddingBottom="10"
+		alpha.up="0"
+		alpha.over="1"
+		alpha.down="0.5"
+		height.up="0"
+		height.over="NaN"
+		height.down="NaN"
+		/>
+</s:Group>

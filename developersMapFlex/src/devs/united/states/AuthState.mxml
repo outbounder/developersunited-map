@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AppState 
+	xmlns="devs.united.states.*"
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/halo" xmlns:skins="devs.united.skins.*" 
+	xmlns:auth="devs.united.states.content.auth.*" xmlns:mx1="library://ns.adobe.com/flex/mx">
+	
+	<fx:Script>
+		<![CDATA[
+			import com.adobe.crypto.MD5;
+			
+			import devs.united.skins.DefBtnSkin;
+			import devs.united.states.content.auth.controller.AuthController;
+			import devs.united.states.content.auth.controller.AuthControllerEvent;
+			
+			import flash.net.navigateToURL;
+			
+			import mx.controls.Alert;
+			import mx.core.FlexGlobals;
+			
+			import spark.utils.TextFlowUtil;
+			
+			private function onShowmeClick():void
+			{
+				var authCtrl:AuthController = new AuthController(this.appMainCtrl.restServiceRoot);
+				authCtrl.addEventListener(AuthControllerEvent.AUTH_COMPLETE, onAuthComplete);
+				authCtrl.showme(this.usernameInput.text, this.passwordInput.text);
+				cursorManager.setBusyCursor();
+			}
+			
+			private function onAuthComplete(e:AuthControllerEvent):void
+			{
+				cursorManager.removeBusyCursor();
+				if(e.response.authOK)
+				{
+					this.appMainCtrl.dev.token = MD5.hash(this.usernameInput.text+e.response.accountType);
+					this.appMainCtrl.dev.key = MD5.hash(this.passwordInput.text);
+					FlexGlobals.topLevelApplication.currentState = 'map';
+				}
+				else
+				{
+					Alert.show('could not login, try again');
+				}
+			}
+		]]>
+	</fx:Script>
+	
+	<s:Group id="form" horizontalCenter="0" verticalCenter="0">
+		<skins:DefRect id="backgroundRect" width="100%" height="100%" />
+		<s:VGroup horizontalAlign="center" top="20" gap="30" width="350" height="350">
+			<s:RichText width="100%" text="{resourceManager.getString('devmap','authTitle')}" styleName="authTitle" paddingLeft="15" paddingRight="15" textAlign="center"/>
+			<s:VGroup>
+				<s:TextInput id="usernameInput" />
+				<s:TextInput id="passwordInput" displayAsPassword="true"/>	
+			</s:VGroup>
+			<mx1:Spacer height="5" />
+			<s:RichText width="100%" content="{TextFlowUtil.importFromString(resourceManager.getString('devmap','authPrivacy'))}" styleName="authPrivacy" paddingLeft="15" paddingRight="15" textAlign="center"/>
+			<mx1:Image source="http://openinviter.com/images/banners/banner_blue_1.gif" click="{navigateToURL(new URLRequest('http://openinviter.com'))}" />
+		</s:VGroup>	
+	</s:Group>
+	<s:Button id="showme" skinClass="{DefBtnSkin}" horizontalCenter="0" verticalCenter="{this.form.height/2 + 30}" 
+		label="{resourceManager.getString('devmap','showme')}"
+		click="onShowmeClick()"/>
+	
+</AppState>

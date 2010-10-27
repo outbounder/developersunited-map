@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/halo" 
+	xmlns:front="devs.united.states.content.front.*" xmlns:mx1="library://ns.adobe.com/flex/mx">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.core.FlexGlobals;
+			import devs.united.skins.DefBtnSkin;
+			
+			private function onDevelopersClick():void
+			{
+				(FlexGlobals.topLevelApplication as Index).currentState = 'auth';
+			}
+			
+			private function onNotDeveloperClick():void
+			{
+				(FlexGlobals.topLevelApplication as Index).currentState = 'not';
+			}
+		]]>
+	</fx:Script>
+	
+	<front:DevelopersBtn id="devBtn" horizontalCenter="0" verticalCenter="0" minWidth="289" minHeight="52" click="onDevelopersClick()"/>
+	<s:Button id="notDevBtn" skinClass="{DefBtnSkin}" horizontalCenter="0" verticalCenter="{this.devBtn.height/2 + 30}" 
+		label="{resourceManager.getString('devmap','notDeveloperLabel')}"
+		click="onNotDeveloperClick()" />
+	
+	<mx1:Label id="title" left="0" top="0" text="{resourceManager.getString('devmap','frontStateLabel')}"
+		styleName="devsUnitedFrontState" />
+</s:Group>
