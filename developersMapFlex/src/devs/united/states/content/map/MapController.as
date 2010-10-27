@@ -12,7 +12,8 @@ package devs.united.states.content.map
 	
 	import mx.collections.ArrayCollection;
 	import mx.managers.ICursorManager;
-
+	
+	[Bindable]
 	public class MapController
 	{
 		private var map:DevsUnitedMap;
@@ -21,7 +22,7 @@ package devs.united.states.content.map
 		private var cursorManager:ICursorManager;
 		
 		private var curDevsOffset:int;
-		private var devsCount:int;
+		public var devsCount:int;
 		private var devListStep:int = 100;
 		
 		public function MapController(map:DevsUnitedMap, devsService:DevMapService, appMainCtrl:AppMainController, 

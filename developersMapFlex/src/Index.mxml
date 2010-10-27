@@ -89,7 +89,6 @@
 	<states:MapState id="mapState" width="100%" height="100%" includeIn="map" alpha.map="1" alpha="0" />
 	<states:NotState id="notState" width="100%" height="100%" includeIn="not" />
 	
-	
 	<s:Label id="restServiceRoot" text="{this.appMainCtrl.restServiceRoot}" right="0" top="0"/>
 	<s:Button id="sourceCodeButton" label="devsunitedmap@github.com" right="10" bottom="10" click="{navigateToURL(new URLRequest('http://github.com/outbounder/developersunited-map'));}"/>
 </s:Application>

@@ -89,7 +89,7 @@
 			<map:DevsUnitedMap id="map" width="95%" height="405" includeIn="created" creationComplete="map_creationCompleteHandler(event)"
 				appMainCtrl="{this.appMainCtrl}"
 				devService="{this.devsService}"/>
-			<mx1:Label id="title" text="{resourceManager.getString('devmap','maptitle')}" styleName="maptitle" />
+			<mx1:Label id="title" text="{resourceManager.getString('devmap','maptitle',[this.mapCtrl.devsCount])}" styleName="maptitle" visible="{this.mapCtrl.devsCount > 0}" />
 			<s:ToggleButton id="showallBtn" skinClass="{DefToggleBtnSkin}" label="{resourceManager.getString('devmap','showAllBtn')}" 
 				selected="{this.currentState == 'showall'}" 
 				click="toggleState_clickHandler(event)"/>
